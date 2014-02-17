@@ -1,9 +1,10 @@
 ﻿Public Class clsContenedorSnake
 
+    Private game As Game1
     Private _dimension As Point
 
     Private _serpientes As List(Of clsSerpiente)
-    Private _comida As clsComida
+    Private _comidas As List(Of clsComida)
 
     Private _velocidadMovimiento As Integer
     Private _tamanioRejilla As Integer
@@ -15,31 +16,43 @@
     Dim spriteFont As SpriteFont
 
 
-    Public Sub New(dimension As Point)
-
+    Public Sub New(game As Game1, dimension As Point)
+        Me.game = game
         _dimension = dimension
-
-        _serpientes = New List(Of clsSerpiente)
 
         _velocidadMovimiento = 60
         _tamanioRejilla = 1
         _tamanioObjetos = 16
 
-        _comida = New clsComida(Me)
+        _serpientes = New List(Of clsSerpiente)
+        _comidas = New List(Of clsComida)
+        _comidas.Add(New clsComida(Me))
+        _comidas.Add(New clsComida(Me))
+
+        Dim comida2 As New clsComida(Me)
+        comida2.puntos = 2
+        comida2.nombreSprite = "banana"
+        _comidas.Add(comida2)
 
     End Sub
 
-    Public Sub New(dimension As Point, numJugadores As Integer)
-
+    Public Sub New(game As Game1, dimension As Point, numJugadores As Integer)
+        Me.game = game
         _dimension = dimension
-
-        _serpientes = New List(Of clsSerpiente)
 
         _velocidadMovimiento = 60
         _tamanioRejilla = 1
         _tamanioObjetos = 20
 
-        _comida = New clsComida(Me)
+        _serpientes = New List(Of clsSerpiente)
+        _comidas = New List(Of clsComida)
+        _comidas.Add(New clsComida(Me))
+        _comidas.Add(New clsComida(Me))
+
+        Dim comida2 As New clsComida(Me)
+        comida2.puntos = 2
+        comida2.nombreSprite = "banana"
+        _comidas.Add(comida2)
 
         Select Case numJugadores
             Case 1
@@ -91,16 +104,23 @@
     End Sub
 
     Public Sub parar()
-        For index As Integer = 0 To serpientes.Count - 1
-            serpientes.Item(index).thread.Abort()
+        For Each serpiente As clsSerpiente In serpientes
+            serpiente.parar()
+        Next
+        For Each comida As clsComida In comidas
+            comida.parar()
         Next
     End Sub
 
 
     Public Sub cargarSprite(Game As Game1)
         SpriteBackground = Game.Content.Load(Of Texture2D)("background")
-        clsSerpiente.cargarSpritesSerpiente(Game)
-        clsComida.cargarSpritesSerpiente(Game)
+        For Each serpiente As clsSerpiente In serpientes
+            serpiente.cargarSpritesSerpiente(Game)
+        Next
+        For Each comida As clsComida In comidas
+            comida.cargarSpritesComida(Game, comida.nombreSprite)
+        Next
         SpriteFont = Game.Content.Load(Of SpriteFont)("SpriteFont1")
     End Sub
 
@@ -120,6 +140,16 @@
             spriteBatch.DrawString(spriteFont, "Jugador " & (i + 1) & ": " & serpientes.Item(i).puntuacion, New Vector2(5, i * 30), Color.Black)
         Next
 
+        Dim parar = True
+        For Each s As clsSerpiente In serpientes
+            If s.isViva Then
+                parar = False
+            End If
+        Next
+        If parar Then
+            game.Exit()
+        End If
+
     End Sub
 
 
@@ -129,7 +159,9 @@
         For i As Integer = 0 To serpientes.Count - 1
             serpientes.Item(i).pintarSerpiente(spriteBatch)
         Next
-        comida.pintarComida(spriteBatch)
+        For Each comida As clsComida In _comidas
+            comida.pintarComida(spriteBatch)
+        Next
 
     End Sub
 
@@ -175,12 +207,12 @@
     End Property
 
 
-    Public Property comida() As clsComida
+    Public Property comidas() As List(Of clsComida)
         Get
-            Return _comida
+            Return _comidas
         End Get
-        Set(ByVal value As clsComida)
-            _comida = value
+        Set(ByVal value As List(Of clsComida))
+            _comidas = value
         End Set
     End Property
 

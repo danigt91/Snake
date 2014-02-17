@@ -35,7 +35,23 @@ Public Class Game1
         graphics.PreferredBackBufferHeight = 720
 
         Dim numJugadores As Integer = 2
-        contenedorSnake = New clsContenedorSnake(
+        contenedorSnake = New clsContenedorSnake(Me,
+            New Point(1280, 720), numJugadores)
+
+        contenedorSnake.run()
+
+    End Sub
+
+    Public Sub New(numJugadores As Integer)
+
+        GameState = SnakeMulti.GameState.GameStarted
+
+        graphics = New GraphicsDeviceManager(Me)
+        Content.RootDirectory = "Content"
+        graphics.PreferredBackBufferWidth = 1280
+        graphics.PreferredBackBufferHeight = 720
+
+        contenedorSnake = New clsContenedorSnake(Me,
             New Point(1280, 720), numJugadores)
 
         contenedorSnake.run()
@@ -122,9 +138,20 @@ Public Class Game1
         oldKeyboardState = currentKeyboardState
         currentKeyboardState = Keyboard.GetState()
 
-        For Each serpiente As clsSerpiente In contenedorSnake.serpientes
-            serpiente.controles(oldKeyboardState, currentKeyboardState)
-        Next
+        If GameState = SnakeMulti.GameState.TitleScreen Then
+
+        ElseIf GameState = SnakeMulti.GameState.GameStarted Then
+
+            For Each serpiente As clsSerpiente In contenedorSnake.serpientes
+                serpiente.controles(oldKeyboardState, currentKeyboardState)
+            Next
+
+        ElseIf GameState = SnakeMulti.GameState.GameEnded Then
+
+
+        End If
+
+        
 
         If (GamePad.GetState(PlayerIndex.One).Buttons.Back = ButtonState.Pressed) Then
             Me.Exit()

@@ -15,7 +15,7 @@ Public Class clsSerpiente
     Private _up As Keys
     Private _down As Keys
 
-    Public Shared _spriteSerpiente As Texture2D
+    Public _spriteSerpiente As Texture2D
 
     Dim _thread As Thread
 
@@ -43,22 +43,25 @@ Public Class clsSerpiente
     End Sub
 
     'Método por el cual comprueba si la serpiente "come" la comida referenciada
-    Public Sub comer(comida As clsComida)
+    Public Sub comer(ByRef comidas As List(Of clsComida))
 
-        'Si la primera posicion de la serpiente es igual a la posicion de la comida
-        If comida.posicion.Equals(_posiciones.Item(0)) Then
+        For Each comida As clsComida In comidas
+            If comida.posicion.Equals(_posiciones.Item(0)) Then
 
-            _puntuacion += 1
-            'Crece la serpiente
-            _posiciones.Add(New Point(_posiciones.Item(_posiciones.Count - 1).X, _posiciones.Item(_posiciones.Count - 1).Y))
-            'Generamos nueva posicion para la comida
-            comida.posicion = comida.generarPosicion
-            'Aumentamos la velocidad de ejecucion de la serpiente
-            If _velocidadMovimiento >= 3 Then
-                _velocidadMovimiento -= 1
+                _puntuacion += comida.puntos
+                'Crece la serpiente
+                _posiciones.Add(New Point(_posiciones.Item(_posiciones.Count - 1).X, _posiciones.Item(_posiciones.Count - 1).Y))
+                'Generamos nueva posicion para la comida
+                comida.posicion = comida.generarPosicion
+                'Aumentamos la velocidad de ejecucion de la serpiente
+                If _velocidadMovimiento >= 3 Then
+                    _velocidadMovimiento -= 1
+                End If
+
             End If
-
-        End If
+        Next
+        'Si la primera posicion de la serpiente es igual a la posicion de la comida
+        
 
     End Sub
 
@@ -110,7 +113,7 @@ Public Class clsSerpiente
             If isViva Then
                 'Mover, comer
                 mover()
-                comer(_contenedor.comida)
+                comer(_contenedor.comidas)
                 'Comprueba si choca con otras
                 If _contenedor.choque(Me) Then
                     isViva = False
@@ -124,8 +127,14 @@ Public Class clsSerpiente
 
     End Sub
 
+    Public Sub parar()
+        If thread IsNot Nothing Then
+            thread.Abort()
+        End If
+    End Sub
 
-    Public Shared Sub cargarSpritesSerpiente(Game As Game1)
+
+    Public Sub cargarSpritesSerpiente(Game As Game1)
         _spriteSerpiente = Game.Content.Load(Of Texture2D)("circle-16")
     End Sub
 

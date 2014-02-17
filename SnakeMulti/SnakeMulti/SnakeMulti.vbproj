@@ -90,6 +90,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>SnakeMulti.frmJuego</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -97,16 +100,30 @@
     <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cls\clsComida.vb" />
-    <Compile Include="cls\clsContenedorSnake.vb" />
-    <Compile Include="cls\clsSerpiente.vb" />
+    <Compile Include="cls\menu\clsMenu.vb" />
+    <Compile Include="cls\menu\frmJuego.Designer.vb">
+      <DependentUpon>frmJuego.vb</DependentUpon>
+    </Compile>
+    <Compile Include="cls\menu\frmJuego.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="cls\offline\clsComida.vb" />
+    <Compile Include="cls\offline\clsContenedorSnake.vb" />
+    <Compile Include="cls\offline\clsSerpiente.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Program.vb" />
     <Compile Include="Game1.vb" />
     <Compile Include="screen\clsScreen.vb" />
@@ -116,6 +133,8 @@
     <Content Include="GameThumbnail.png">
       <XnaPlatformSpecific>true</XnaPlatformSpecific>
     </Content>
+    <None Include="Resources\btn.png" />
+    <None Include="Resources\menu.png" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -168,7 +187,16 @@
   <ItemGroup>
     <None Include="SnakeMulti_TemporaryKey.pfx" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="cls\menu\frmJuego.resx">
+      <DependentUpon>frmJuego.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--
